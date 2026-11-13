@@ -2,3 +2,5 @@ node_modules/
 out/
 dist/
 build/
+# appli installée, si on l'installe dans le dossier du projet
+APP/

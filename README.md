@@ -2,6 +2,8 @@
 
 **Lecteur de musique de bureau pour Windows** : votre musique devient votre fond d'écran.
 
+![Le bureau avec mUIsik : paroles synchronisées, lumière autour de l'écran et lecteur en verre](docs/screenshots/bureau.png)
+
 - **Fond d'écran animé** derrière les icônes : le clip du morceau, la pochette animée, ou votre propre vidéo.
 - **Lumière autour de l'écran** aux couleurs de la pochette, qui bouge au rythme du son. 4 styles (halo, pulsation, comètes, spectre), et 4 positions (tout, bas, haut, coins).
 - **Paroles synchronisées** sur le bureau ([LRCLIB](https://lrclib.net), ou un fichier `.lrc` à côté d'un MP3), avec 4 animations. Police au choix parmi toutes celles installées, ainsi que la graisse, l'italique, la casse, l'espacement et l'alignement.
@@ -9,6 +11,14 @@
 - Sources : **Spotify**, **YouTube**, **SoundCloud** et **fichiers locaux** (glissez un dossier sur le lecteur).
 
 > Projet personnel, non affilié à Spotify, YouTube, SoundCloud ou Genius. La lecture passe toujours par leurs lecteurs et API officiels.
+
+## Captures
+
+| Réglages | File d'attente |
+|---|---|
+| ![Panneau des réglages du lecteur : lumière, fond d'écran, paroles, polices](docs/screenshots/lecteur-reglages.png) | ![Panneau « À suivre » avec le morceau en cours](docs/screenshots/lecteur-file.png) |
+
+*Captures réalisées avec un morceau et des paroles de démonstration. Avec YouTube, le clip du morceau remplace le dégradé en fond d'écran. Avec Spotify ou SoundCloud, c'est la pochette animée, ou le clip trouvé automatiquement.*
 
 ## Installer
 

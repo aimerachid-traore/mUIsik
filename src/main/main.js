@@ -916,22 +916,43 @@ function devHooks() {
     }, 15000);
   }
 
-  // --snap=<dossier> : capture le lecteur posé sur le fond d'écran (sans capturer l'écran).
+  // --demo=<dossier> : joue le premier morceau du dossier (sans l'ajouter aux dossiers de l'utilisateur).
+  const demoDir = arg('demo');
+  if (demoDir) {
+    // Démo : rien n'est enregistré (les réglages de l'utilisateur restent intacts) et tout est affiché.
+    settingsStore.save = () => {};
+    settings.features = { edge: true, wallpaper: true, lyrics: true, player: true };
+    broadcast();
+    setTimeout(() => { const tracks = scanFolder(demoDir); if (tracks[0]) playItem(tracks[0], tracks); }, 4000);
+  }
+
+  // --snap=<dossier> : capture la scène (fond d'écran, lumière, lecteur) par les fenêtres de l'appli
+  // elles-mêmes, sans capturer l'écran. Chaque calque est enregistré avec sa position (scene.json).
   const snapDir = arg('snap');
   if (snapDir) {
     const snap = async (name) => {
       if (!wins.player || !wins.wallpaper) return;
-      const pb = wins.player.getBounds();
       const o = targetDisplay().bounds;
-      const bg = await wins.wallpaper.webContents.capturePage({ x: pb.x - o.x, y: pb.y - o.y, width: pb.width, height: pb.height });
-      const fg = await wins.player.webContents.capturePage();
-      fs.writeFileSync(path.join(snapDir, `${name}-bg.png`), bg.toPNG());
-      fs.writeFileSync(path.join(snapDir, `${name}-fg.png`), fg.toPNG());
+      const rel = (b) => ({ x: b.x - o.x, y: b.y - o.y, width: b.width, height: b.height });
+      const layers = [];
+      const save = async (id, win) => {
+        const img = await win.webContents.capturePage();
+        fs.writeFileSync(path.join(snapDir, `${name}-${id}.png`), img.toPNG());
+        layers.push({ id, file: `${name}-${id}.png`, ...rel(win.getBounds()) });
+      };
+      await save('wallpaper', wins.wallpaper);
+      for (const side of EDGE_SIDES) if (edgeWins[side]?.isVisible() && edgeWins[side].getBounds().width > 1) await save(`edge-${side}`, edgeWins[side]);
+      await save('player', wins.player);
+      fs.writeFileSync(path.join(snapDir, `${name}.json`), JSON.stringify({ width: o.width, height: o.height, layers }, null, 2));
       console.log('[snap]', name);
     };
-    setTimeout(() => snap('closed'), 12000);
-    setTimeout(() => wins.player?.webContents.executeJavaScript("document.querySelector('.tab[data-view=settings]').click()"), 13000);
-    setTimeout(() => snap('settings'), 14500);
+    const tab = (v) => wins.player?.webContents.executeJavaScript(`document.querySelector('.tab[data-view=${v}]').click()`);
+    setTimeout(() => snap('scene'), 13000);
+    setTimeout(() => tab('settings'), 14000);
+    setTimeout(() => snap('settings'), 15500);
+    setTimeout(() => tab('queue'), 16500);
+    setTimeout(() => snap('queue'), 18000);
+    setTimeout(() => wins.player?.webContents.executeJavaScript("document.getElementById('panel-close').click()"), 19000);
   }
 
   // --hittest : position écran du bouton Réglages (pour un test de clic réel), puis état du panneau.

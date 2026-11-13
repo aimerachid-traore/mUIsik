@@ -310,9 +310,12 @@ const hit = (r, rect) => !(r[0] > rect.x + rect.width || r[1] > rect.y + rect.he
 
 // Assemble les calques dans une bande (seulement ce qui la touche).
 function paint(s) {
-  const { ctx, rect } = s;
+  const { ctx, rect, canvas } = s;
+  // On efface tout le canvas en pixels réels : en demi-résolution il peut dépasser la bande d'un
+  // pixel, et cette ligne jamais effacée accumulait la lumière jusqu'au blanc.
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.setTransform(SCALE, 0, 0, SCALE, -rect.x * SCALE, -rect.y * SCALE);
-  ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
   ctx.globalCompositeOperation = 'lighter';
   for (const e of EDGES) if (layers[e]?.drawn && hit(edgeRect(e), rect)) blitEdge(ctx, e);
   for (const d of dots) {
