@@ -1,0 +1,63 @@
+{
+  "name": "muisik",
+  "productName": "mUIsik",
+  "version": "0.1.0",
+  "description": "Lecteur de musique de bureau : fond d'écran animé, lumière d'ambiance et paroles synchronisées (Spotify, YouTube, SoundCloud, fichiers locaux).",
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "icon": "node scripts/make-icon.js",
+    "dist": "npm run icon && electron-builder --win nsis",
+    "pack": "npm run icon && electron-builder --win dir"
+  },
+  "license": "MIT",
+  "author": "mUIsik",
+  "devDependencies": {
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "app.muisik.desktop",
+    "productName": "mUIsik",
+    "copyright": "mUIsik",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "src/main/native/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "executableName": "mUIsik"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "mUIsik",
+      "runAfterFinish": true,
+      "artifactName": "mUIsik-Setup-${version}.exe"
+    },
+    "electronLanguages": [
+      "fr",
+      "en-US"
+    ]
+  }
+}

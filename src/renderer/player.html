@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>mUIsik</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <link rel="stylesheet" href="player.css">
+</head>
+<body>
+  <main id="stage">
+    <!-- panneau : recherche, playlists, file d'attente, réglages -->
+    <section id="panel" class="glass" aria-hidden="true">
+      <header class="panel-head">
+        <nav class="tabs" role="tablist">
+          <span class="tab-pill" aria-hidden="true"></span>
+          <button class="tab" data-view="search" role="tab">Recherche</button>
+          <button class="tab" data-view="playlists" role="tab">Playlists</button>
+          <button class="tab" data-view="queue" role="tab">À suivre</button>
+          <button class="tab" data-view="settings" role="tab">Réglages</button>
+        </nav>
+        <button class="icon-btn" id="panel-close" title="Fermer" aria-label="Fermer le panneau"></button>
+      </header>
+
+      <div class="views">
+        <div class="view" id="view-search">
+          <div class="search-row">
+            <span class="search-ico" aria-hidden="true"></span>
+            <input id="q" type="search" placeholder="Rechercher…" autocomplete="off" spellcheck="false">
+            <span class="src-chip" id="search-src"></span>
+          </div>
+          <div class="list" id="results"></div>
+        </div>
+        <div class="view" id="view-playlists"><div class="list" id="playlists"></div></div>
+        <div class="view" id="view-queue"><div class="list" id="queue"></div></div>
+        <div class="view" id="view-settings"><div class="settings" id="settings"></div></div>
+      </div>
+    </section>
+
+    <!-- barre de lecture -->
+    <section id="bar" class="glass">
+      <button id="src-btn" class="src-btn" title="Choisir où écouter" aria-label="Choisir où écouter"></button>
+      <div class="cover-box" id="cover-box"><img id="cover" alt=""><div class="cover-ph" id="cover-ph"></div></div>
+      <div class="meta">
+        <div class="title" id="title">mUIsik</div>
+        <div class="artist" id="artist">Cherchez un morceau pour commencer</div>
+        <div class="lyrics-miss" id="lyrics-miss" hidden></div>
+        <div class="progress">
+          <span id="cur">0:00</span>
+          <div class="track" id="track"><div class="fill" id="fill"></div><div class="knob" id="knob"></div></div>
+          <span id="dur">0:00</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="icon-btn small" id="repeat" title="Répéter" aria-label="Répéter"></button>
+        <button class="icon-btn" id="prev" title="Précédent" aria-label="Précédent"></button>
+        <button class="play" id="play" title="Lecture" aria-label="Lecture"></button>
+        <button class="icon-btn" id="next" title="Suivant" aria-label="Suivant"></button>
+        <button class="icon-btn small" id="like" title="J'aime" aria-label="J'aime"></button>
+      </div>
+      <div class="tools">
+        <div class="vol"><span class="vol-ico" aria-hidden="true"></span><input id="volume" type="range" min="0" max="100" aria-label="Volume"></div>
+        <div class="tool-row">
+          <button class="icon-btn small" id="t-search" title="Rechercher" aria-label="Rechercher"></button>
+          <button class="icon-btn small" id="t-list" title="Playlists" aria-label="Playlists"></button>
+          <button class="icon-btn small" id="t-lyrics" title="Paroles sur le bureau" aria-label="Paroles sur le bureau"></button>
+          <button class="icon-btn small" id="t-settings" title="Réglages" aria-label="Réglages"></button>
+          <button class="icon-btn small" id="t-hide" title="Masquer le lecteur" aria-label="Masquer le lecteur"></button>
+        </div>
+      </div>
+    </section>
+
+    <div id="menu" class="menu glass" hidden></div>
+    <div id="toast" class="toast glass" role="status"></div>
+    <div id="drop" class="drop">Déposez un dossier de musique</div>
+  </main>
+  <script type="module" src="player.js"></script>
+</body>
+</html>

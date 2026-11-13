@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>mUIsik wallpaper</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.youtube.com https://s.ytimg.com https://w.soundcloud.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://w.soundcloud.com; img-src 'self' data: blob: https:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'; connect-src 'self'">
+  <link rel="stylesheet" href="wallpaper.css">
+</head>
+<body>
+  <div id="idle"></div>
+  <div id="art"></div>
+  <div id="cover-wrap"><img id="cover" alt=""></div>
+  <div id="yt-wrap"><div id="yt"></div></div>
+  <video id="custom" muted loop playsinline></video>
+  <div id="shade"></div>
+  <div id="lyrics" class="lyrics"></div>
+
+  <!-- verre du lecteur (voir glass.js) -->
+  <div id="glass"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="glass-defs"></defs></svg>
+
+  <!-- moteur audio invisible -->
+  <iframe id="sc" title="SoundCloud" allow="autoplay; encrypted-media" src="about:blank"></iframe>
+  <audio id="local" preload="auto"></audio>
+
+  <script type="module" src="wallpaper.js"></script>
+</body>
+</html>

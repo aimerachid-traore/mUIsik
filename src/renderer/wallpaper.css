@@ -1,0 +1,166 @@
+:root {
+  --c1: #ff3ea5; --c2: #8b5cf6; --c3: #22d3ee;
+  --dim: 0.25;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #050507; cursor: none; user-select: none; }
+
+/* --- fond "au repos" : dégradé lent aux couleurs de la pochette --- */
+#idle {
+  position: fixed; inset: -20%;
+  background:
+    radial-gradient(40% 50% at 20% 30%, color-mix(in srgb, var(--c1) 55%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 80% 70%, color-mix(in srgb, var(--c2) 50%, transparent), transparent 70%),
+    radial-gradient(35% 45% at 60% 20%, color-mix(in srgb, var(--c3) 35%, transparent), transparent 70%),
+    #07070b;
+  filter: blur(40px) saturate(1.2);
+  animation: drift 38s ease-in-out infinite alternate;
+  transition: opacity 1.2s;
+}
+@keyframes drift {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate(4%, -3%) rotate(8deg) scale(1.08); }
+  100% { transform: translate(-3%, 4%) rotate(-6deg) scale(1.04); }
+}
+
+/* --- pochette floue en plein écran + pochette nette qui "respire" --- */
+#art {
+  position: fixed; inset: -8%;
+  background-size: cover; background-position: center;
+  filter: blur(60px) saturate(1.4) brightness(0.7);
+  opacity: 0; transition: opacity 1.4s, background-image 1s;
+  animation: kenburns 46s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  from { transform: scale(1.05) translate(0, 0); }
+  to { transform: scale(1.18) translate(-2%, 1.5%); }
+}
+#cover-wrap {
+  --bass: 0;
+  position: fixed; left: 50%; top: 42%;
+  width: min(34vh, 30vw); aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(calc(1 + var(--bass) * 0.035));
+  opacity: 0; transition: opacity 1s, transform 0.12s linear;
+}
+#cover {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 22px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55), 0 0 120px color-mix(in srgb, var(--c1) 40%, transparent);
+  animation: float 9s ease-in-out infinite;
+}
+@keyframes float { 50% { transform: translateY(-14px) rotate(-1.2deg); } }
+
+/* --- vidéo (clip YouTube ou vidéo perso) en "cover" --- */
+#yt-wrap, #custom { position: fixed; inset: 0; opacity: 0; transition: opacity 1.2s; pointer-events: none; }
+#yt-wrap { overflow: hidden; }
+#yt-wrap iframe {
+  position: absolute; left: 50%; top: 50%;
+  /* Plus haute que l'écran : la vidéo garde sa largeur, et le titre / les boutons YouTube
+     (collés en haut et en bas de l'iframe) sortent du cadre. */
+  width: max(100vw, 177.78vh); height: calc(max(100vh, 56.25vw) + 260px);
+  transform: translate(-50%, -50%);
+  border: 0;
+}
+#custom { width: 100%; height: 100%; object-fit: cover; }
+
+body.show-art #art, body.show-art #cover-wrap { opacity: 1; }
+body.show-art #idle, body.show-video #idle, body.show-custom #idle { opacity: 0; }
+body.show-video #yt-wrap { opacity: 1; }
+body.show-custom #custom { opacity: 1; }
+body.show-video #cover-wrap, body.show-custom #cover-wrap { opacity: 0; }
+body.lyrics-on.show-art #cover-wrap { left: 30%; }
+
+#shade {
+  position: fixed; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, calc(var(--dim) + 0.35)), transparent 45%),
+    rgba(0, 0, 0, var(--dim));
+}
+
+#sc { position: fixed; width: 2px; height: 2px; left: -10px; top: -10px; opacity: 0; border: 0; pointer-events: none; }
+
+/* ================= paroles ================= */
+.lyrics {
+  --size: 56px;
+  position: fixed; left: 8vw; right: 8vw; top: 50%;
+  transform: translateY(-50%);
+  text-align: center; pointer-events: none;
+  opacity: 0; transition: opacity 0.6s;
+}
+body.lyrics-on .lyrics { opacity: 1; }
+body.lyrics-on.show-art .lyrics { left: 48vw; right: 6vw; text-align: left; }
+
+.lyrics .block { position: absolute; inset: auto 0; top: 50%; transform: translateY(-50%); transition: opacity 0.45s, transform 0.45s cubic-bezier(.2,.8,.2,1), filter 0.45s; }
+.lyrics .block.enter { opacity: 0; transform: translateY(calc(-50% + 30px)); filter: blur(6px); }
+.lyrics .block.leave { opacity: 0; transform: translateY(calc(-50% - 30px)); filter: blur(6px); }
+
+.lyrics .line { color: #fff; line-height: 1.15; text-wrap: balance; }
+.lyrics .line.current {
+  font: 800 var(--size)/1.12 "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
+}
+.lyrics .line.prev, .lyrics .line.next {
+  font: 600 calc(var(--size) * 0.42) "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  opacity: 0.42; margin: 0.45em 0; filter: blur(0.5px);
+}
+.lyrics .instrumental { display: inline-flex; align-items: baseline; gap: 0.3em; }
+.lyrics .instrumental .note { animation: bob 1.2s ease-in-out infinite; display: inline-block; color: var(--c1); }
+.lyrics .instrumental .countdown { font-size: 0.4em; opacity: 0.6; font-variant-numeric: tabular-nums; }
+@keyframes bob { 50% { transform: translateY(-0.12em) rotate(-8deg); } }
+
+/* karaoke : la ligne se remplit au rythme du chant */
+.style-karaoke .fill {
+  --p: 0%;
+  background: linear-gradient(90deg, #fff 0 var(--p), rgba(255, 255, 255, 0.32) var(--p) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: none;
+}
+.style-karaoke .line.current { text-shadow: none; filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.5)); }
+
+/* néon : couleurs de la pochette */
+.style-neon .line.current {
+  font-family: "Bahnschrift", "Segoe UI", sans-serif; font-weight: 600; letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 0 6px #fff, 0 0 18px var(--c1), 0 0 42px var(--c1), 0 0 80px var(--c2);
+  animation: flicker 0.6s steps(2) 1;
+}
+.style-neon .line.prev, .style-neon .line.next { font-family: "Bahnschrift", sans-serif; color: var(--c3); }
+@keyframes flicker { 0% { opacity: 0.3; } 40% { opacity: 1; } 60% { opacity: 0.6; } 100% { opacity: 1; } }
+
+/* machine à écrire */
+.style-typewriter .line.current { font: 600 calc(var(--size) * 0.8) / 1.25 "Cascadia Mono", "Consolas", monospace; letter-spacing: 0; }
+.style-typewriter .caret { display: inline-block; width: 0.08em; height: 1em; margin-left: 0.06em; background: var(--c1); vertical-align: -0.12em; animation: blink 0.9s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #idle, #art, #cover { animation: none; }
+}
+
+/* ===== calques cachés : plus de peinture ni d'animation (économise le GPU) ===== */
+#idle, #art, #cover-wrap, #yt-wrap, #custom { transition: opacity 1.2s, visibility 0s linear 0s; }
+body.show-art #idle, body.show-video #idle, body.show-custom #idle,
+body:not(.show-art) #art, body:not(.show-art) #cover-wrap,
+body:not(.show-video) #yt-wrap, body:not(.show-custom) #custom {
+  visibility: hidden; animation-play-state: paused;
+  transition: opacity 1.2s, visibility 0s linear 1.2s;
+}
+body:not(.show-art) #cover { animation-play-state: paused; }
+
+/* ===== verre du lecteur ===== */
+#glass { position: fixed; left: 0; top: 0; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.glass-shape {
+  position: absolute; overflow: hidden;
+  background: rgba(255, 255, 255, 0.025);
+  transition: none;
+}
+#glass.animate .glass-shape { transition: opacity .42s cubic-bezier(.2, .9, .25, 1.15), transform .42s cubic-bezier(.2, .9, .25, 1.15), left .42s, top .42s, width .42s, height .42s; }
+.glass-shape.hidden { opacity: 0; transform: translateY(14px) scale(0.97); }
+
+/* ===== paroles : police choisie ===== */
+.lyrics { --lyr-weight: 800; --lyr-italic: normal; --lyr-case: none; --lyr-spacing: 0em; }
+.lyrics .line { text-transform: var(--lyr-case); font-style: var(--lyr-italic); }
+.lyrics .line.current { font-weight: var(--lyr-weight); letter-spacing: calc(-0.02em + var(--lyr-spacing)); }
+.lyrics.custom-font .line, .lyrics.custom-font .line.current, .lyrics.custom-font .line.prev, .lyrics.custom-font .line.next { font-family: var(--lyr-font), "Segoe UI", sans-serif; }
+.lyrics[data-align="left"] { text-align: left !important; }
+.lyrics[data-align="center"] { text-align: center !important; }
